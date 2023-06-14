@@ -26,16 +26,14 @@ def setupUi(self):
         font = QtGui.QFont()
         font.setFamily("Multiround Pro")
         self.lineEdit_2.setFont(font)
-        self.lineEdit_2.setStyleSheet("background-color: rgba(54, 54, 54,175);\n"
-        "border-radius: 10px")
+        self.lineEdit_2.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
         self.lineEdit_2.setObjectName("lineEdit_2")
         self.lineEdit_3 = QtWidgets.QLineEdit(parent=self.frame)
         self.lineEdit_3.setGeometry(QtCore.QRect(70, 110, 301, 41))
         font = QtGui.QFont()
         font.setFamily("Multiround Pro")
         self.lineEdit_3.setFont(font)
-        self.lineEdit_3.setStyleSheet("background-color: rgba(54, 54, 54,175);\n"
-        "border-radius: 10px;  ")
+        self.lineEdit_3.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
         self.lineEdit_3.setObjectName("lineEdit_3")
         self.checkBox = QtWidgets.QCheckBox(parent=self.frame)
         self.checkBox.setGeometry(QtCore.QRect(20, 330, 381, 20))
@@ -75,41 +73,42 @@ def setupUi(self):
         font = QtGui.QFont()
         font.setFamily("Multiround Pro")
         self.lineEdit_4.setFont(font)
-        self.lineEdit_4.setStyleSheet("background-color: rgba(54, 54, 54,175);\n"
-        "border-radius: 10px")
+        self.lineEdit_4.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
         self.lineEdit_4.setObjectName("lineEdit_4")
         self.lineEdit_5 = QtWidgets.QLineEdit(parent=self.frame)
         self.lineEdit_5.setGeometry(QtCore.QRect(70, 260, 301, 41))
         font = QtGui.QFont()
         font.setFamily("Multiround Pro")
         self.lineEdit_5.setFont(font)
-        self.lineEdit_5.setStyleSheet("background-color: rgba(54, 54, 54,175);\n"
-        "border-radius: 10px")
+        self.lineEdit_5.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
         self.lineEdit_5.setObjectName("lineEdit_5")
         self.setCentralWidget(self.centralwidget)
 
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Platinum"))
-        self.lineEdit_2.setPlaceholderText(_translate("MainWindow", "                            Пароль"))
-        self.lineEdit_3.setPlaceholderText(_translate("MainWindow", "                             Логин"))
+        self.lineEdit_2.setPlaceholderText(_translate("MainWindow", "                         Пароль"))
+        self.lineEdit_3.setPlaceholderText(_translate("MainWindow", "                          Логин"))
         self.checkBox.setText(_translate("MainWindow", "Согласны ли вы с правилами и соглашением Platinum"))
         self.pushButton.setText(_translate("MainWindow", "Зарегистрироваться"))
         self.pushButton.clicked.connect(lambda: on_reg(self))
         self.pushButton_2.setText(_translate("MainWindow", "Войти"))
         self.pushButton_2.clicked.connect(lambda: login_page_raw.setupUi(self))
         self.label.setText(_translate("MainWindow", "Регистрация"))
-        self.lineEdit_4.setPlaceholderText(_translate("MainWindow", "          Подтверждение Пароля"))
-        self.lineEdit_5.setPlaceholderText(_translate("MainWindow", "                             Почта"))
+        self.lineEdit_4.setPlaceholderText(_translate("MainWindow", "       Подтверждение Пароля"))
+        self.lineEdit_5.setPlaceholderText(_translate("MainWindow", "                          Почта"))
+        self.lineEdit_2.setEchoMode(QtWidgets.QLineEdit.EchoMode.Password)
+        self.lineEdit_4.setEchoMode(QtWidgets.QLineEdit.EchoMode.Password)
+        self.pushButton.setAutoDefault(True)
 
         def on_mouse_click(e):
                 if "solid black" in self.lineEdit_2.styleSheet():
-                        self.lineEdit_2.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px;")
+                        self.lineEdit_2.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
                 if "solid black" in self.lineEdit_3.styleSheet():
-                        self.lineEdit_3.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px;")
+                        self.lineEdit_3.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
                 if "solid black" in self.lineEdit_4.styleSheet():
-                        self.lineEdit_4.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px;")
+                        self.lineEdit_4.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
                 if "solid black" in self.lineEdit_5.styleSheet():
-                        self.lineEdit_5.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px;")
+                        self.lineEdit_5.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
 
         self.frame.mousePressEvent = on_mouse_click
 
@@ -119,44 +118,67 @@ def on_reg(self):
         login = self.lineEdit_3.text()
         passw = self.lineEdit_2.text()
         email = self.lineEdit_5.text()
+        passw_2 = self.lineEdit_4.text()
 
         if login == "":
 
                 if "solid black" in self.lineEdit_2.styleSheet():
-                        self.lineEdit_2.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px;")
+                        self.lineEdit_2.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
                 if "solid black" in self.lineEdit_5.styleSheet():
-                        self.lineEdit_5.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px;")
+                        self.lineEdit_5.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
                 if "solid black" in self.lineEdit_4.styleSheet():
-                        self.lineEdit_4.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px;")
+                        self.lineEdit_4.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
 
-                self.lineEdit_3.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; border: 2px solid black")
+                self.lineEdit_3.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; border: 2px solid black; padding: 10px")
                 self.passw_empty_wbox = QtWidgets.QMessageBox.warning(self, "Platinum: Login field is empty", "Поле для ввода логина пустое")
 
         elif passw == "":
 
                 if "solid black" in self.lineEdit_3.styleSheet():
-                        self.lineEdit_3.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px;")
+                        self.lineEdit_3.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
                 if "solid black" in self.lineEdit_5.styleSheet():
-                        self.lineEdit_5.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px;")
+                        self.lineEdit_5.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
                 if "solid black" in self.lineEdit_4.styleSheet():
-                        self.lineEdit_4.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px;")
+                        self.lineEdit_4.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
 
-                self.lineEdit_2.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; border: 2px solid black")
-                self.lineEdit_4.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; border: 2px solid black")
+                self.lineEdit_2.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; border: 2px solid black; padding: 10px")
+                self.lineEdit_4.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; border: 2px solid black; padding: 10px")
                 self.passw_empty_wbox = QtWidgets.QMessageBox.warning(self, "Platinum: Password field is empty", "Поле для ввода пароля пустое")
 
         elif "@" not in email or "." not in email:
 
                 if "solid black" in self.lineEdit_3.styleSheet():
-                        self.lineEdit_3.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px;")
+                        self.lineEdit_3.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
                 if "solid black" in self.lineEdit_2.styleSheet():
-                        self.lineEdit_2.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px;")
+                        self.lineEdit_2.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
                 if "solid black" in self.lineEdit_4.styleSheet():
-                        self.lineEdit_4.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px;")
-                self.lineEdit_5.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; border: 2px solid black")
-                self.passw_empty_wbox = QtWidgets.QMessageBox.warning(self, "Platinum: Email field is empty", "Поле для ввода почты пустое")
+                        self.lineEdit_4.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
+                self.lineEdit_5.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; border: 2px solid black; padding: 10px")
+                self.passw_empty_wbox = QtWidgets.QMessageBox.warning(self, "Platinum: Email field is incorrect", "Почта введена некорректно")
+
+        elif passw != passw_2:
+
+                if "solid black" in self.lineEdit_3.styleSheet():
+                        self.lineEdit_3.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
+                if "solid black" in self.lineEdit_5.styleSheet():
+                        self.lineEdit_5.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
+                if "solid black" in self.lineEdit_4.styleSheet():
+                        self.lineEdit_4.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
+
+                self.lineEdit_2.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; border: 2px solid black; padding: 10px")
+                self.lineEdit_4.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; border: 2px solid black; padding: 10px")
+                self.passw_empty_wbox = QtWidgets.QMessageBox.warning(self, "Platinum: Passwords does not match", "Пароли не совпадают")
 
         else:
 
+                crypt_string = "register?" + "|" + login + "|" + passw + "|" + email
 
-                print("sus")
+                sndr = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sndr.connect(("localhost", 9999))
+                sndr.send(crypt_string.encode())
+
+                answ = sndr.recv(1024).decode()
+                if answ == "valid":
+                        print("valid")
+                else:
+                        print("invalid")

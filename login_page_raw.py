@@ -2,6 +2,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 import socket
 from reg import setupUi as ui_reg
 from PyQt6.QtCore import QEvent
+from PyQt6.QtWidgets import QLineEdit
 
 def setupUi(self):
     self.setObjectName("MainWindow")
@@ -22,14 +23,14 @@ def setupUi(self):
     font = QtGui.QFont()
     font.setFamily("Multiround Pro")
     self.lineEdit_2.setFont(font)
-    self.lineEdit_2.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px")
+    self.lineEdit_2.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
     self.lineEdit_2.setObjectName("lineEdit_2")
     self.lineEdit_3 = QtWidgets.QLineEdit(parent=self.frame)
     self.lineEdit_3.setGeometry(QtCore.QRect(70, 140, 301, 41))
     font = QtGui.QFont()
     font.setFamily("Multiround Pro")
     self.lineEdit_3.setFont(font)
-    self.lineEdit_3.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px")
+    self.lineEdit_3.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
     self.lineEdit_3.setObjectName("lineEdit_3")
     self.checkBox = QtWidgets.QCheckBox(parent=self.frame)
     self.checkBox.setGeometry(QtCore.QRect(25, 260, 381, 20))
@@ -67,14 +68,26 @@ def setupUi(self):
     self.label.setObjectName("label")
     self.pushButton_2.clicked.connect(lambda: ui_reg(self))
     self.setCentralWidget(self.centralwidget)
+    self.lineEdit_2.setEchoMode(QLineEdit.EchoMode.Password)
+    self.pushButton.setAutoDefault(True)
+    self.errorfield = QtWidgets.QLabel(self.frame)
+    self.errorfield.setGeometry(QtCore.QRect(120, 30, 300, 16))
+    font = QtGui.QFont()
+    font.setFamily("Multiround Pro")
+    font.setPointSize(9)
+    self.errorfield.setFont(font)
+    self.errorfield.setStyleSheet("background-color: rgba(255, 255, 255, 0);")
+    self.errorfield.setObjectName("errorfield")
 
     def on_mouse_press(e):
         if "solid black" in self.lineEdit_2.styleSheet():
-            self.lineEdit_2.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px;")
+            self.lineEdit_2.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
         if "solid black" in self.lineEdit_3.styleSheet():
-            self.lineEdit_3.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px;")
+            self.lineEdit_3.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
+        if len(self.errorfield.text()) > 0:
+            self.errorfield.setText("")
 
-    self.frame.mousePressEvent = on_mouse_press
+    self.centralwidget.mousePressEvent = on_mouse_press
 
     retranslateUi(self)
 
@@ -83,8 +96,8 @@ def setupUi(self):
 def retranslateUi(self):
     _translate = QtCore.QCoreApplication.translate
     self.setWindowTitle(_translate("MainWindow", "Platinum"))
-    self.lineEdit_2.setPlaceholderText(_translate("MainWindow", "                            Пароль"))
-    self.lineEdit_3.setPlaceholderText(_translate("MainWindow", "                             Логин"))
+    self.lineEdit_2.setPlaceholderText(_translate("MainWindow", "                         Пароль"))
+    self.lineEdit_3.setPlaceholderText(_translate("MainWindow", "                          Логин"))
     self.checkBox.setText(_translate("MainWindow", "Согласны ли вы с правилами и соглашением Platinum"))
     self.pushButton.setText(_translate("MainWindow", "Войти"))
     self.pushButton_2.setText(_translate("MainWindow", "Зарегистрироваться"))
@@ -99,18 +112,18 @@ def on_login(self):
     if login == "":
 
         if "solid black" in self.lineEdit_2.styleSheet():
-            self.lineEdit_2.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px;")
+            self.lineEdit_2.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
 
-        self.lineEdit_3.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; border: 2px solid black")
-        self.passw_empty_wbox = QtWidgets.QMessageBox.warning(self, "Platinum: Login field is empty", "Поле для ввода логина пустое")
+        self.lineEdit_3.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; border: 2px solid black; padding: 10px")
+        self.errorfield.setText("Поле для ввода логина пустое")
 
     elif passw == "":
 
         if "solid black" in self.lineEdit_3.styleSheet():
-            self.lineEdit_3.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px;")
+            self.lineEdit_3.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
 
-        self.lineEdit_2.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; border: 2px solid black")
-        self.passw_empty_wbox = QtWidgets.QMessageBox.warning(self, "Platinum: Password field is empty", "Поле для ввода пароля пустое")
+        self.lineEdit_2.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; border: 2px solid black; padding: 10px")
+        self.errorfield.setText("Поле для ввода пароля пустое")
 
     
     else:
@@ -118,7 +131,7 @@ def on_login(self):
         if "@" in login:
 
             sndr = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sndr.connect(("localhost", 2417))
+            sndr.connect(("localhost", 9999))
 
             email_line = "on_email_login?" + "|" + login + "|" + passw
 
@@ -127,7 +140,7 @@ def on_login(self):
         elif "@" not in login:
 
             sndr = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sndr.connect(("localhost", 2417))
+            sndr.connect(("localhost", 9999))
 
             email_line = "on_uname_login?" + "|" + login + "|" + passw
 
