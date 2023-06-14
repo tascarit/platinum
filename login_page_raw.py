@@ -2,6 +2,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 import socket
 from reg import setupUi as ui_reg
 from PyQt6.QtCore import QEvent
+import functools
 from PyQt6.QtWidgets import QLineEdit
 
 def setupUi(self):
@@ -71,12 +72,12 @@ def setupUi(self):
     self.lineEdit_2.setEchoMode(QLineEdit.EchoMode.Password)
     self.pushButton.setAutoDefault(True)
     self.errorfield = QtWidgets.QLabel(self.frame)
-    self.errorfield.setGeometry(QtCore.QRect(120, 30, 300, 16))
+    self.errorfield.setGeometry(QtCore.QRect(110, 30, 300, 16))
     font = QtGui.QFont()
     font.setFamily("Multiround Pro")
     font.setPointSize(9)
     self.errorfield.setFont(font)
-    self.errorfield.setStyleSheet("background-color: rgba(255, 255, 255, 0);")
+    self.errorfield.setStyleSheet("background-color: rgba(190, 190, 190, 0); color: rgba(190, 190, 190, 0)")
     self.errorfield.setObjectName("errorfield")
 
     def on_mouse_press(e):
@@ -85,7 +86,13 @@ def setupUi(self):
         if "solid black" in self.lineEdit_3.styleSheet():
             self.lineEdit_3.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
         if len(self.errorfield.text()) > 0:
-            self.errorfield.setText("")
+            anim = QtCore.QVariantAnimation(self.errorfield, duration=700, startValue=QtGui.QColor("black"), endValue=QtGui.QColor(QtGui.qRgba(190, 190, 190, 0)), loopCount=1)
+            def help_func1(widget, color):
+                widget.setStyleSheet("background-color: rgba(255, 255, 255, 0); color: {}".format(color.name()))
+            anim.valueChanged.connect(functools.partial(help_func1, self.errorfield))
+            anim.start(QtCore.QAbstractAnimation.DeletionPolicy.DeleteWhenStopped)
+
+
 
     self.centralwidget.mousePressEvent = on_mouse_press
 
@@ -106,8 +113,16 @@ def retranslateUi(self):
         
 
 def on_login(self):
-    login = self.lineEdit_3.text()
-    passw = self.lineEdit_2.text()
+
+    if len(self.errorfield.text()) > 0:
+            anim = QtCore.QVariantAnimation(self.errorfield, duration=700, startValue=QtGui.QColor("black"), endValue=QtGui.QColor(QtGui.qRgba(190, 190, 190, 0)), loopCount=1)
+            def help_func1(widget, color):
+                widget.setStyleSheet("background-color: rgba(255, 255, 255, 0); color: {}".format(color.name()))
+            anim.valueChanged.connect(functools.partial(help_func1, self.errorfield))
+            anim.start(QtCore.QAbstractAnimation.DeletionPolicy.DeleteWhenStopped)
+
+    login = str(self.lineEdit_3.text()).lower()
+    passw = str(self.lineEdit_2.text())
 
     if login == "":
 
@@ -116,6 +131,11 @@ def on_login(self):
 
         self.lineEdit_3.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; border: 2px solid black; padding: 10px")
         self.errorfield.setText("Поле для ввода логина пустое")
+        anim = QtCore.QVariantAnimation(self.errorfield, duration=700, startValue=QtGui.QColor(QtGui.qRgba(190, 190, 190, 0)), endValue=QtGui.QColor("black"), loopCount=1)
+        def help_func(widget, color):
+            widget.setStyleSheet("background-color: rgba(255, 255, 255, 0); color: {}".format(color.name()))
+        anim.valueChanged.connect(functools.partial(help_func, self.errorfield))
+        anim.start(QtCore.QAbstractAnimation.DeletionPolicy.DeleteWhenStopped)
 
     elif passw == "":
 
@@ -124,6 +144,11 @@ def on_login(self):
 
         self.lineEdit_2.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; border: 2px solid black; padding: 10px")
         self.errorfield.setText("Поле для ввода пароля пустое")
+        anim = QtCore.QVariantAnimation(self.errorfield, duration=700, startValue=QtGui.QColor(QtGui.qRgba(190, 190, 190, 0)), endValue=QtGui.QColor("black"), loopCount=1)
+        def help_func(widget, color):
+            widget.setStyleSheet("background-color: rgba(255, 255, 255, 0); color: {}".format(color.name()))
+        anim.valueChanged.connect(functools.partial(help_func, self.errorfield))
+        anim.start(QtCore.QAbstractAnimation.DeletionPolicy.DeleteWhenStopped)
 
     
     else:
@@ -131,7 +156,7 @@ def on_login(self):
         if "@" in login:
 
             sndr = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sndr.connect(("localhost", 9999))
+            sndr.connect(("localhost", 9998))
 
             email_line = "on_email_login?" + "|" + login + "|" + passw
 
@@ -140,8 +165,18 @@ def on_login(self):
         elif "@" not in login:
 
             sndr = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sndr.connect(("localhost", 9999))
+            sndr.connect(("localhost", 9998))
 
-            email_line = "on_uname_login?" + "|" + login + "|" + passw
+            uname_line = "on_uname_login?" + "|" + login + "|" + passw
 
-            sndr.send(email_line.encode())
+            sndr.send(uname_line.encode())
+            answ = sndr.recv(1024).decode()
+            if answ == "valid":
+                print("sus")
+            if answ == "invalid":
+                self.errorfield.setText("Данные введены некорректно")
+                anim = QtCore.QVariantAnimation(self.errorfield, duration=700, startValue=QtGui.QColor(QtGui.qRgba(190, 190, 190, 0)), endValue=QtGui.QColor("black"), loopCount=1)
+                def help_func(widget, color):
+                    widget.setStyleSheet("background-color: rgba(255, 255, 255, 0); color: {}".format(color.name()))
+                anim.valueChanged.connect(functools.partial(help_func, self.errorfield))
+                anim.start(QtCore.QAbstractAnimation.DeletionPolicy.DeleteWhenStopped)
