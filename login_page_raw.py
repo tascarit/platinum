@@ -4,14 +4,56 @@ from reg import setupUi as ui_reg
 from PyQt6.QtCore import QEvent
 import functools
 from PyQt6.QtWidgets import QLineEdit
+import main_raw
+import os
+import getpass
+import platform
+
+
+def on_checking(check):
+    if platform.system() == "Windows":
+        path = f"{os.getenv('SystemDrive')}:\\Users\\{getpass.getuser()}\\AppData\\Local\\Platinum\\cache.txt"
+        try:
+            with open(path, "r") as f:
+                xf = f.read()
+                sndr = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sndr.connect(("localhost", 9996))
+
+                sndr.send(f"check_xf?|{xf}".encode())
+                answ = sndr.recv(1024).decode()
+                sndr.close()
+                if answ == "valid":
+                    main_raw.setupUi(check, xf)
+                else:
+                    setupUi(check)
+        except FileNotFoundError:
+            setupUi(check)
+    elif platform.system() == "Linux":
+        path = f"/home/{getpass.getuser()}/Platinum/cache.txt"
+        try:
+            with open(path, "r") as f:
+                xf = f.read()
+                sndr = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sndr.connect(("localhost", 9996))
+
+                sndr.send(f"check_xf?|{xf}".encode())
+                answ = sndr.recv(1024).decode()
+                sndr.close()
+                if answ == "valid":
+                    main_raw.setupUi(check, xf)
+                else:
+                    setupUi(check)
+        except FileNotFoundError:
+            setupUi(check)
 
 def setupUi(self):
     self.setObjectName("MainWindow")
+    self.resize(1120, 936)
     font = QtGui.QFont()
     font.setFamily("Multiround Pro")
     self.setFont(font)
     self.setStyleSheet("background-color: rgb(211, 211, 211);")
-    self.centralwidget = QtWidgets.QWidget(parent=self)
+    self.centralwidget = QtWidgets.QScrollArea(parent=self)
     self.centralwidget.setObjectName("centralwidget")
     self.frame = QtWidgets.QFrame(parent=self.centralwidget)
     self.frame.setGeometry(QtCore.QRect(350, 260, 441, 421))
@@ -19,6 +61,8 @@ def setupUi(self):
     self.frame.setFrameShape(QtWidgets.QFrame.Shape.StyledPanel)
     self.frame.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
     self.frame.setObjectName("frame")
+    self.centralwidget.setWidget(self.frame)
+    self.centralwidget.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
     self.lineEdit_2 = QtWidgets.QLineEdit(parent=self.frame)
     self.lineEdit_2.setGeometry(QtCore.QRect(70, 190, 301, 41))
     font = QtGui.QFont()
@@ -34,7 +78,7 @@ def setupUi(self):
     self.lineEdit_3.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; padding: 10px")
     self.lineEdit_3.setObjectName("lineEdit_3")
     self.checkBox = QtWidgets.QCheckBox(parent=self.frame)
-    self.checkBox.setGeometry(QtCore.QRect(25, 260, 381, 20))
+    self.checkBox.setGeometry(QtCore.QRect(25, 260, 386, 20))
     font = QtGui.QFont()
     font.setFamily("Multiround Pro")
     font.setPointSize(8)
@@ -105,7 +149,7 @@ def retranslateUi(self):
     self.setWindowTitle(_translate("MainWindow", "Platinum"))
     self.lineEdit_2.setPlaceholderText(_translate("MainWindow", "                         Пароль"))
     self.lineEdit_3.setPlaceholderText(_translate("MainWindow", "                          Логин"))
-    self.checkBox.setText(_translate("MainWindow", "Согласны ли вы с правилами и соглашением Platinum"))
+    self.checkBox.setText(_translate("MainWindow", "Согласны ли вы с правилами и положениями Platinum"))
     self.pushButton.setText(_translate("MainWindow", "Войти"))
     self.pushButton_2.setText(_translate("MainWindow", "Зарегистрироваться"))
     self.label.setText(_translate("MainWindow", "С возвращением!"))
@@ -131,6 +175,7 @@ def on_login(self):
 
         self.lineEdit_3.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; border: 2px solid black; padding: 10px")
         self.errorfield.setText("Поле для ввода логина пустое")
+        self.errorfield.setGeometry(QtCore.QRect(110, 30, 300, 16))
         anim = QtCore.QVariantAnimation(self.errorfield, duration=700, startValue=QtGui.QColor(QtGui.qRgba(190, 190, 190, 0)), endValue=QtGui.QColor("black"), loopCount=1)
         def help_func(widget, color):
             widget.setStyleSheet("background-color: rgba(255, 255, 255, 0); color: {}".format(color.name()))
@@ -144,6 +189,17 @@ def on_login(self):
 
         self.lineEdit_2.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; border: 2px solid black; padding: 10px")
         self.errorfield.setText("Поле для ввода пароля пустое")
+        self.errorfield.setGeometry(QtCore.QRect(110, 30, 300, 16))
+        anim = QtCore.QVariantAnimation(self.errorfield, duration=700, startValue=QtGui.QColor(QtGui.qRgba(190, 190, 190, 0)), endValue=QtGui.QColor("black"), loopCount=1)
+        def help_func(widget, color):
+            widget.setStyleSheet("background-color: rgba(255, 255, 255, 0); color: {}".format(color.name()))
+        anim.valueChanged.connect(functools.partial(help_func, self.errorfield))
+        anim.start(QtCore.QAbstractAnimation.DeletionPolicy.DeleteWhenStopped)
+
+    elif self.checkBox.isChecked() == False:
+        self.lineEdit_2.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; border: 2px solid black; padding: 10px")
+        self.errorfield.setText("Вы не согласились с правилами и положениями")
+        self.errorfield.setGeometry(QtCore.QRect(50, 30, 370, 16))
         anim = QtCore.QVariantAnimation(self.errorfield, duration=700, startValue=QtGui.QColor(QtGui.qRgba(190, 190, 190, 0)), endValue=QtGui.QColor("black"), loopCount=1)
         def help_func(widget, color):
             widget.setStyleSheet("background-color: rgba(255, 255, 255, 0); color: {}".format(color.name()))
@@ -156,25 +212,108 @@ def on_login(self):
         if "@" in login:
 
             sndr = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sndr.connect(("localhost", 9998))
+            sndr.connect(("localhost", 9996))
 
             email_line = "on_email_login?" + "|" + login + "|" + passw
 
             sndr.send(email_line.encode())
+            answ = sndr.recv(1024).decode()
+
+            sndr.close()
+            if answ == "valid":
+                if platform.system() == "Windows":
+                        path = f"{os.getenv('SystemDrive')}:\\Users\\{getpass.getuser()}\\AppData\\Local\\Platinum"
+                        try:
+                            os.mkdir(path)
+                        except FileExistsError:
+                            pass
+                        finally:
+                            with open(f"{path}\\cache.txt", "w+") as f:
+                                sndr = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                                sndr.connect(("localhost", 9996))
+                                sndr.send(f"get_xf?|{login}|{passw}".encode())
+
+                                xf = sndr.recv(1024).decode()
+                                f.write(xf)
+                                f.close()
+                                sndr.close()
+                elif platform.system() == "Linux":
+                        path = f"/home/{getpass.getuser()}/Platinum"
+                        try:
+                            os.mkdir(path)
+                        except FileExistsError:
+                            pass
+                        finally:
+                            with open(f"{path}/cache.txt", "w+") as f:
+                                sndr = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                                sndr.connect(("localhost", 9996))
+                                sndr.send(f"get_xf?|{login}|{passw}".encode())
+
+                                xf = sndr.recv(1024).decode()
+                                f.write(xf)
+                                f.close()
+                                sndr.close()
+                main_raw.setupUi(self, xf)
+            if answ == "invalid":
+                self.errorfield.setText("Данные введены некорректно")
+                self.errorfield.setGeometry(QtCore.QRect(110, 30, 370, 16))
+                anim = QtCore.QVariantAnimation(self.errorfield, duration=700, startValue=QtGui.QColor(QtGui.qRgba(190, 190, 190, 0)), endValue=QtGui.QColor("black"), loopCount=1)
+                def help_func(widget, color):
+                    widget.setStyleSheet("background-color: rgba(255, 255, 255, 0); color: {}".format(color.name()))
+                anim.valueChanged.connect(functools.partial(help_func, self.errorfield))
+                anim.start(QtCore.QAbstractAnimation.DeletionPolicy.DeleteWhenStopped)
 
         elif "@" not in login:
 
             sndr = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sndr.connect(("localhost", 9998))
+            sndr.connect(("localhost", 9996))
 
             uname_line = "on_uname_login?" + "|" + login + "|" + passw
 
             sndr.send(uname_line.encode())
             answ = sndr.recv(1024).decode()
+
+            sndr.close()
             if answ == "valid":
-                print("sus")
+                if platform.system() == "Windows":
+                        path = f"{os.getenv('SystemDrive')}:\\Users\\{getpass.getuser()}\\AppData\\Local\\Platinum"
+                        try:
+                            os.mkdir(path)
+                        except FileExistsError:
+                            pass
+                        finally:
+                            with open(f"{path}\\cache.txt", "w+") as f:
+                                sndr = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                                sndr.connect(("localhost", 9996))
+                                sndr.send(f"get_xf?|{login}|{passw}".encode())
+
+                                xf = sndr.recv(1024).decode()
+                                f.write(xf)
+                                f.close()
+                                sndr.close()
+                elif platform.system() == "Linux":
+                        path = f"/home/{getpass.getuser()}/Platinum"
+                        try:
+                            os.mkdir(path)
+                            print("dir maked")
+                        except FileExistsError:
+                            pass
+                            print("exists")
+                        finally:
+                            with open(f"{path}/cache.txt", "w+") as f:
+                                sndr = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                                sndr.connect(("localhost", 9996))
+                                sndr.send(f"get_xf?|{login}|{passw}".encode())
+                                print("sended")
+
+                                xf = sndr.recv(1024).decode()
+                                f.write(xf)
+                                f.close()
+                                sndr.close()
+                main_raw.setupUi(self, xf)
             if answ == "invalid":
                 self.errorfield.setText("Данные введены некорректно")
+                self.errorfield.setGeometry(QtCore.QRect(110, 30, 370, 16))
                 anim = QtCore.QVariantAnimation(self.errorfield, duration=700, startValue=QtGui.QColor(QtGui.qRgba(190, 190, 190, 0)), endValue=QtGui.QColor("black"), loopCount=1)
                 def help_func(widget, color):
                     widget.setStyleSheet("background-color: rgba(255, 255, 255, 0); color: {}".format(color.name()))

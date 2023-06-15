@@ -13,7 +13,7 @@ def setupUi(self):
         self.setFont(font)
         self.setStyleSheet("\n"
         "background-color: rgb(211, 211, 211);")
-        self.centralwidget = QtWidgets.QWidget(parent=self)
+        self.centralwidget = QtWidgets.QScrollArea(parent=self)
         self.centralwidget.setObjectName("centralwidget")
         self.frame = QtWidgets.QFrame(parent=self.centralwidget)
         self.frame.setGeometry(QtCore.QRect(350, 230, 441, 491))
@@ -22,6 +22,8 @@ def setupUi(self):
         self.frame.setFrameShape(QtWidgets.QFrame.Shape.StyledPanel)
         self.frame.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
         self.frame.setObjectName("frame")
+        self.centralwidget.setWidget(self.frame)
+        self.centralwidget.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.lineEdit_2 = QtWidgets.QLineEdit(parent=self.frame)
         self.lineEdit_2.setGeometry(QtCore.QRect(70, 160, 301, 41))
         font = QtGui.QFont()
@@ -89,7 +91,7 @@ def setupUi(self):
         self.setWindowTitle(_translate("MainWindow", "Platinum"))
         self.lineEdit_2.setPlaceholderText(_translate("MainWindow", "                         Пароль"))
         self.lineEdit_3.setPlaceholderText(_translate("MainWindow", "                          Логин"))
-        self.checkBox.setText(_translate("MainWindow", "Согласны ли вы с правилами и соглашением Platinum"))
+        self.checkBox.setText(_translate("MainWindow", "Согласны ли вы с правилами и положениями Platinum"))
         self.pushButton.setText(_translate("MainWindow", "Зарегистрироваться"))
         self.pushButton.clicked.connect(lambda: on_reg(self))
         self.pushButton_2.setText(_translate("MainWindow", "Войти"))
@@ -235,23 +237,53 @@ def on_reg(self):
                 anim.valueChanged.connect(functools.partial(help_func, self.errorfield))
                 anim.start(QtCore.QAbstractAnimation.DeletionPolicy.DeleteWhenStopped)
 
+        elif self.checkBox.isChecked() == False:
+                self.lineEdit_2.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; border: 2px solid black; padding: 10px")
+                self.errorfield.setText("Вы не согласились с правилами и положениями")
+                self.errorfield.setGeometry(QtCore.QRect(50, 30, 350, 16))
+                anim = QtCore.QVariantAnimation(self.errorfield, duration=700, startValue=QtGui.QColor(QtGui.qRgba(190, 190, 190, 0)), endValue=QtGui.QColor("black"), loopCount=1)
+                def help_func(widget, color):
+                        widget.setStyleSheet("background-color: rgba(255, 255, 255, 0); color: {}".format(color.name()))
+                anim.valueChanged.connect(functools.partial(help_func, self.errorfield))
+                anim.start(QtCore.QAbstractAnimation.DeletionPolicy.DeleteWhenStopped)
+
+        elif len(login) > 15:
+                self.lineEdit_2.setStyleSheet("background-color: rgba(54, 54, 54,175); border-radius: 10px; border: 2px solid black; padding: 10px")
+                self.errorfield.setText("Логин не должен превышать 15 символов")
+                self.errorfield.setGeometry(QtCore.QRect(50, 30, 350, 16))
+                anim = QtCore.QVariantAnimation(self.errorfield, duration=700, startValue=QtGui.QColor(QtGui.qRgba(190, 190, 190, 0)), endValue=QtGui.QColor("black"), loopCount=1)
+                def help_func(widget, color):
+                        widget.setStyleSheet("background-color: rgba(255, 255, 255, 0); color: {}".format(color.name()))
+                anim.valueChanged.connect(functools.partial(help_func, self.errorfield))
+                anim.start(QtCore.QAbstractAnimation.DeletionPolicy.DeleteWhenStopped)
+
         else:
 
                 crypt_string = "register?" + "|" + login + "|" + passw + "|" + email
 
                 sndr = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                sndr.connect(("localhost", 9998))
+                sndr.connect(("localhost", 9996))
                 sndr.send(crypt_string.encode())
 
                 answ = sndr.recv(1024).decode()
                 if answ == "valid":
                         self.errorfield.setText("Вы успешно зарегестрировались, теперь вы можете войти")
-                        self.errorfield.setGeometry(QtCore.QRect(30, 25, 350, 16))
+                        self.errorfield.setGeometry(QtCore.QRect(5, 25, 431, 16))
                         anim = QtCore.QVariantAnimation(self.errorfield, duration=700, startValue=QtGui.QColor(QtGui.qRgba(190, 190, 190, 0)), endValue=QtGui.QColor("black"), loopCount=1)
                         def help_func(widget, color):
                                 widget.setStyleSheet("background-color: rgba(255, 255, 255, 0); color: {}".format(color.name()))
                         anim.valueChanged.connect(functools.partial(help_func, self.errorfield))
                         anim.start(QtCore.QAbstractAnimation.DeletionPolicy.DeleteWhenStopped)
+                
+                elif answ == "exists":
+                        self.errorfield.setText("Аккаунт с таким логином/почтой уже существует.")
+                        self.errorfield.setGeometry(QtCore.QRect(55, 25, 380, 16))
+                        anim = QtCore.QVariantAnimation(self.errorfield, duration=700, startValue=QtGui.QColor(QtGui.qRgba(190, 190, 190, 0)), endValue=QtGui.QColor("black"), loopCount=1)
+                        def help_func(widget, color):
+                                widget.setStyleSheet("background-color: rgba(255, 255, 255, 0); color: {}".format(color.name()))
+                        anim.valueChanged.connect(functools.partial(help_func, self.errorfield))
+                        anim.start(QtCore.QAbstractAnimation.DeletionPolicy.DeleteWhenStopped)
+
                 else:
                         self.errorfield.setText("Тех. неполадки, попробуйте позже")
                         self.errorfield.setGeometry(QtCore.QRect(108, 25, 350, 16))
